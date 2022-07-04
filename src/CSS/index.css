@@ -1,0 +1,28 @@
+:root {
+  --mobile-threshold: 500px;
+  --main-bg-color: linear-gradient(180deg, #09244E 0%, #04142D 100%);
+  --primary-text-color: #F36E21;
+  --secondary-text-color: #FFFFFF;
+  --border-radius: 10px;
+}
+body {
+  margin: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--main-bg-color);
+  min-height: 100vh;
+  min-width: 100%;
+  height: fit-content;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+.MuiOutlinedInput-input {
+  border-color: #FFFFFF !important;
+}
