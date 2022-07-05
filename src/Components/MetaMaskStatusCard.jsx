@@ -1,9 +1,15 @@
 import React from "react";
 import useMetamask from "../Hooks/useMetamask";
 import MyButton from "./MyButton";
-
+import { useWallet, UseWalletProvider } from 'use-wallet'
 export default function MetaMaskStatusCard() {
-  const { connect, disconnect, isActive, account } = useMetamask();
+ const wallet=useWallet()
+  
+  const connect=true
+  const disconnect=false
+  const isactive=true
+  const account=wallet?.account
+  console.log(wallet)
   const hasMetamask = typeof window.ethereum;
   let installMetamask = (
     <>
@@ -14,7 +20,7 @@ export default function MetaMaskStatusCard() {
           width={"235px"}
         />
         <span className="market-status my-3">
-          {isActive ? "Connected" : "Disconnected"}
+          {true ? "Connected" : "Disconnected"}
         </span>
         <div className="market-status-l2">Make sure Metamask is installed</div>
       </div>
@@ -23,13 +29,19 @@ export default function MetaMaskStatusCard() {
   if (hasMetamask == "undefined") {
     return installMetamask;
   }
-  if (isActive) {
-    return (
-      <div className="sticky-metamask hide-on-mobile">
-        Connected to Metamask. Account: {account}
-      </div>
-    );
-  }
+  // if (isActive) {
+  //   return (
+  //     <div className="sticky-metamask hide-on-mobile">
+  //       Connected to Metamask. Account: {account}
+  //     </div>
+  //   );
+  // }
+
+
+
+
+
+  
   return (
     <div className="my-card">
       <img
@@ -38,22 +50,27 @@ export default function MetaMaskStatusCard() {
         width={"235px"}
       />
       <span className="market-status my-3">
-        {isActive ? "Connected" : "Disconnected"}
+        {wallet?.status=="connected" ? "Connected" : "Disconnected"}
       </span>
-      {!isActive && (
+     
+      {wallet?.status!="connected" && (
         <MyButton
           className="my-2"
-          onClick={connect}
+          onClick={()=>{
+            wallet.connect()
+          }}
           title={"Connect to Metamask"}
         />
       )}
-      {account ? (
+      {wallet?.status=="connected" ? (
         <span className="text-dark market-status-l2">
-          My account: {account}
+          My account: {wallet?.account}
         </span>
       ) : null}
-      {isActive && (
-        <button className="btn btn-danger my-3" onClick={disconnect}>
+      {wallet?.status=="connected" && (
+        <button className="btn btn-danger my-3" onClick={()=>{
+         wallet?.reset()
+        }}>
           {" "}
           Disconnect From Metamask
         </button>

@@ -13,9 +13,13 @@ import Marketplace from "./Components/Marketplace";
 import Tokens from "./Components/Tokens";
 import Roadmap from "./Components/Roadmap";
 import SubmitNft from "./Components/SubmitNft";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
   return (
+    
     <Router>
+        <ToastContainer />
       <Routes>
         //hello
         <Route path="/" element={<Homepage />} />

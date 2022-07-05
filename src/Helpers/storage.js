@@ -7,6 +7,7 @@ export function getHasCancelledPopUp() {
   return sessionStorage.getItem(HAS_CANCELLED);
 }
 export function getUser() {
+  
   return JSON.parse(localStorage.getItem(USER_INFO));
 }
 export function setUser(user) {

@@ -10,6 +10,9 @@ const ColorButton = styled(Button)(({ theme }) => ({
   "&:hover": {
     backgroundColor: "#9d3c04",
   },
+  ":disabled":{
+    backgroundColor:"#ffff"
+  }
 }));
 
 export default function MyButton(props) {

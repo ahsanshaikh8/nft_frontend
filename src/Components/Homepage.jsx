@@ -10,8 +10,10 @@ import Footer from "./Footer.jsx";
 import useMetamask from "../Hooks/useMetamask.js";
 import { useEffect } from "react";
 import { getHasCancelledPopUp } from "../Helpers/storage.js";
+import { useWallet, UseWalletProvider } from 'use-wallet'
 export default function Homepage() {
-  const { connect, disconnect, isActive, account } = useMetamask();
+  const wallet = useWallet()
+  // const { connect, disconnect, isActive, account } = useMetamask();
   const [state, setState] = useState({
     showSignupModal: false,
   });
@@ -22,12 +24,12 @@ export default function Homepage() {
       showSignupModal: !state.showSignupModal,
     }));
   };
-  useEffect(() => {
-    if (isActive && !getHasCancelledPopUp()) {
-      console.log("connected to metamask in homepage");
-      showSignUpModal();
-    }
-  }, [isActive])
+  // useEffect(() => {
+  //   if (isActive && !getHasCancelledPopUp()) {
+  //     console.log("connected to metamask in homepage");
+  //     showSignUpModal();
+  //   }
+  // }, [isActive])
   return (
     <div className="background-video">
       <div className="overlay">
@@ -53,6 +55,7 @@ export default function Homepage() {
             </span>
           </h2>
           <SignUp
+            
             show={state.showSignupModal}
             closeModal={() => {
               showSignUpModal();
@@ -86,11 +89,17 @@ export default function Homepage() {
             <MyHomepageButton
               title={strings["game-beta"].toUpperCase()}
               className="button w-button"
-              onClick={showSignUpModal}
+              onClick={()=>{
+                showSignUpModal();
+                console.log(wallet.status)
+                if(wallet.status !="connected")
+                 wallet.connect();
+
+              }}
             ></MyHomepageButton>
           </div>
         </div>
-        <Footer showSocials={true} />
+        <Footer showSocials={true} />*
       </div>
     </div>
   );

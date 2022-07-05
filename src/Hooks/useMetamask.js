@@ -8,12 +8,13 @@ export const MetamaskProvider = ({ children }) => {
   const [isActive, setIsActive] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const connect = async () => {
+    console.log("hello")
     console.log("connecting to metamask...");
-    try {
-      await activate(injected);
-    } catch (error) {
-      console.log("error connecting to metamask", error);
-    }
+    // try {
+    //   await activate(injected);
+    // } catch (error) {
+    //   console.log("error connecting to metamask", error);
+    // }
   };
   const disconnect = async () => {
     console.log("disconnecting to metamask...");

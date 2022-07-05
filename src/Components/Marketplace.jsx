@@ -4,12 +4,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 import categories from "../Helpers/categories";
 import { getHasCancelledPopUp } from "../Helpers/storage";
 import strings from "../Helpers/strings";
-import useMetamask from "../Hooks/useMetamask";
+
 import BrandLogo from "./BrandLogo";
 import MetamaskListing from "./MetamaskListing";
 import MetaMaskStatusCard from "./MetaMaskStatusCard";
 export default function Marketplace() {
-  const { connect, disconnect, isActive, account } = useMetamask();
+  const isActive=false
+  
   const navigator = useNavigate();
   const [category, setCategory] = useState("cars");
   const [video, setVideo] = useState(require("../Images/cars.mp4"));
