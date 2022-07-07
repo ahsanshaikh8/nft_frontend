@@ -18,12 +18,14 @@ export default function StackingPool() {
   const [walletAddress,setWalletAddress]=useState([])
   const User1 = JSON.parse(localStorage.getItem("User"))
   const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
+  const [componentLoader,setComponentLoader]=useState(false)
+  const [componentLoader1,setComponentLoader1]=useState(false)
     const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
     console.log(userType)
     const userID=userType?._id
   useEffect(() => {
     getAllNfts()
-  }, []);
+  }, [componentLoader,componentLoader1]);
   const getAllNfts=async()=>{
     const {data} = await server.post(
       "users/getAllNftsByUserId",
@@ -83,7 +85,7 @@ export default function StackingPool() {
       {isBigScreen ? pcHeadings : mobileHeadings}
       <div className="cards-wrapper">
         {allNfts?.map((val,i)=>{
-            return(<SvgCard data={val} walletAddress={walletAddress} />)
+            return(<SvgCard data={val} walletAddress={walletAddress} loader={componentLoader} setloader={setComponentLoader} loader1={componentLoader1} setloader1={setComponentLoader1} />)
         })
       }
         
