@@ -16,6 +16,7 @@ root.render(
     
       <MetamaskProvider> */}
       <UseWalletProvider
+      autoConnect
     chainId={97}
     
     connectors={{

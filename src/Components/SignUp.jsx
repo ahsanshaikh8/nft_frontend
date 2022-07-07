@@ -244,8 +244,9 @@ catch(error)
                  /> 
                 <MyTextField
                   type="text"
-                  name="walletAddress"
-                  label="Wallet Address"
+                  name={wallet?.account?"":"walletaddress"}
+                  label={wallet?.account?"":"walletaddress"}
+                  // label="walletaddress"
                   value={formikProps.values.walletaddress}
                   onChange={formikProps.handleChange("walletaddress")}
                   onBlur={formikProps.handleBlur("walletaddress")}

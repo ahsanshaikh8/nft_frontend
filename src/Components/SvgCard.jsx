@@ -47,11 +47,12 @@ export default function SvgCard(props) {
       console.log(contractAbi)
       console.log(contractAddress)
       console.log(artworkData?.amount_for_sale)
-       web3.setProvider(wallet.ethereum)
+      web3.setProvider(wallet.ethereum)
+      const value=100000000000000 * artworkData?.amount_for_sale
       const dv = new web3.eth.Contract(contractAbi, contractAddress);
        dv.methods
                .mint(wallet?.account,1,artworkData?.amount_for_sale, data)
-               .send({ from: wallet?.account,value:"100000000000000"  },async function(result)
+               .send({ from: wallet?.account,value:value.toString()  },async function(result)
                {
                   console.log(result)
                })
@@ -95,7 +96,7 @@ export default function SvgCard(props) {
     <div className="svg-card">
       <img className="nft-image-in-svg-card" src={imagePath} alt="NFT pic" />
       <h2 className="nft-title-in-svg-card">{artworkData?.title}</h2>
-      <div className="market-price">{artworkData?.price}</div>
+      <div className="market-price">{artworkData?.status==1? 0.001 * artworkData?.amount_for_sale:artworkData?.price} BNB</div>
       <div className="hovered-info">
         <span className="mb-1">Description:</span>
         <span className="mb-1" style={{ 
