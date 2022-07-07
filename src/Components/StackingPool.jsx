@@ -6,14 +6,47 @@ import SvgCard from "./SvgCard";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import { getUser } from "../Helpers/storage";
+import { useState } from "react";
+import server from "../apis/server";
+import CryptoJS from "crypto-js";
+import { useWallet } from "use-wallet";
 export default function StackingPool() {
+  const wallet=useWallet()
   const isBigScreen = useMediaQuery({ query: "(min-width: 600px)" });
   const navigator = useNavigate();
+  const [allNfts,setAllNfts]=useState([])
+  const [walletAddress,setWalletAddress]=useState([])
+  const User1 = JSON.parse(localStorage.getItem("User"))
+  const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
+    const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
+    console.log(userType)
+    const userID=userType?._id
   useEffect(() => {
-    if (!getUser()) {
-      navigator("/login", { replace: true });
-    }
+    getAllNfts()
   }, []);
+  const getAllNfts=async()=>{
+    const {data} = await server.post(
+      "users/getAllNftsByUserId",
+      {
+   
+        "userId":userID
+    } 
+     ,
+      { 
+        headers: {
+          "Content-Type": "application/json",
+     },
+      } 
+    )
+    if(data)
+    {
+      console.log(data)
+      console.log(data?.data)
+      setWalletAddress(data?.walletAddress)
+      setAllNfts(data?.data)
+    }
+    
+  }
   let pcHeadings = (
     <div>
       {" "}
@@ -49,11 +82,11 @@ export default function StackingPool() {
       <BrandLogo className="hide-on-mobile" />
       {isBigScreen ? pcHeadings : mobileHeadings}
       <div className="cards-wrapper">
-        <SvgCard />
-        <SvgCard />
-        <SvgCard />
-        <SvgCard />
-        <SvgCard />
+        {allNfts?.map((val,i)=>{
+            return(<SvgCard data={val} walletAddress={walletAddress} />)
+        })
+      }
+        
       </div>
       <div className="stacking-pool-coins-img" />
       <Footer showSocials={false} />

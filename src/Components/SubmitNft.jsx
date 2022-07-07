@@ -6,7 +6,13 @@ import MyTextField from "./MyTextField";
 import { Checkbox } from "@mui/material";
 import { useEffect } from "react";
 import MyButton from "./MyButton";
+import {useDropzone} from 'react-dropzone'
+import server from "../apis/server";
+import  {useCallback} from 'react'
+import CryptoJS from 'crypto-js'
+import { toast } from 'react-toastify';
 export default function SubmitNft() {
+  const [file, setFile] = useState(null);
   const [state, setState] = useState({
     name: "",
     description: "",
@@ -15,6 +21,60 @@ export default function SubmitNft() {
     author: "",
     isConfirmed: false,
   });
+  const User1 = JSON.parse(localStorage.getItem("User"))
+  const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
+    const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
+    console.log(userType)
+    const userID=userType?._id
+  function uploadImage() {
+    if(!userID)
+    return 
+    let formdata = new FormData()
+    formdata.append("userId", userID);
+formdata.append("file",file);
+formdata.append("title", state?.name);
+formdata.append("description", state?.description);
+formdata.append("price", state?.price);
+formdata.append("amount_for_sale", state?.amount);
+formdata.append("status",0);
+    server.post("users/createNFT", formdata, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then(response =>{
+      setFile("")
+      setState(
+        {
+          name: "",
+          description: "",
+          amount: 1,
+          price: 0,
+          author: "",
+          isConfirmed: false,
+        }
+      )
+      toast.success("Artwork submitted successfully.")
+         console.log(response)
+      // setNftImage(response?.data?.artDetail?.file)
+      // setArtworkId(response?.data?.artDetail?._id)
+      // setDisabled(false)
+    })
+    };
+    const onDrop = useCallback(acceptedFiles => {
+      setFile(acceptedFiles[0])
+    }, [])
+    
+    const {acceptedFiles, getRootProps, getInputProps} = useDropzone({onDrop,multiple:false});
+    
+      
+    const files = acceptedFiles.map(file => ( 
+  
+      <li key={file.path}>
+        {file.path} - {file.size} bytes
+      </li>
+    ));
+
   const handleChange = (e) => {
     const name = e.target.name;
     const val = e.target.value;
@@ -38,6 +98,7 @@ export default function SubmitNft() {
         </div>
       </div>
       <div className="submit-container">
+     
         <h3>Meta Magic Map Art Gallery</h3>
         <p>
           Submit and sell your Art NFT to MetaMagicMap in game Art Gallery.{" "}
@@ -56,22 +117,30 @@ export default function SubmitNft() {
           <h1>ART GALLERY NFT SUBMIT</h1>
           <div className="submit-nft-choose">
             <label for="file-input">
+            
+            <div style={{cursor:"pointer"}} {...getRootProps({className: 'dropzone'})}>
               <img
-                src={choose}
+                src={file?URL.createObjectURL(file):choose}
                 loading="lazy"
                 width="284"
                 sizes="(max-width: 479px) 74vw, 284px"
                 id="NFTimage"
                 className="image-18"
               />
+                            </div>
+                            
+             
+                              
             </label>
-            <input id="file-input" type="file" style={{ display: "none" }} />
+          
+           
             <MyTextField
               onChange={handleChange}
               type="text"
               name="name"
               label="Name"
               placeholder="NFT Name"
+              value={state?.name}
             />
             <MyTextField
               onChange={handleChange}
@@ -79,6 +148,7 @@ export default function SubmitNft() {
               name="description"
               label="Description"
               placeholder="Description"
+              value={state?.description}
             />
             <MyTextField
               onChange={handleChange}
@@ -88,6 +158,7 @@ export default function SubmitNft() {
               max={10}
               name="amount"
               label="Amount For Sale"
+              value={state?.amount}
             />
             <MyTextField
               onChange={handleChange}
@@ -95,6 +166,7 @@ export default function SubmitNft() {
               name="price"
               label="Price (25 Minimum)"
               placeholder="Amount of MMM"
+              value={state?.price}
             />
             <MyTextField
               onChange={handleChange}
@@ -102,6 +174,7 @@ export default function SubmitNft() {
               name="author"
               label="Author"
               placeholder="NFT Copyright Owner"
+              value={state?.author}
             />
             <div className="submit-confirm">
               <Checkbox
@@ -116,7 +189,9 @@ export default function SubmitNft() {
               />
               I Certify that I own the copyright of the image submitted.
             </div>
-            <MyButton title={"SUBMIT"} />
+            <MyButton title={"SUBMIT"} onClick={()=>{
+              uploadImage()
+            }} disabled={(state?.name && state?.isConfirmed && state?.description && state?.amount && state?.price && state?.author && file) ?false:true} />
             <div
               style={{
                 color: "#948b8b",

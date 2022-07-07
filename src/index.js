@@ -16,7 +16,8 @@ root.render(
     
       <MetamaskProvider> */}
       <UseWalletProvider
-    chainId={1}
+    chainId={97}
+    
     connectors={{
       // This is how connectors get configured
       portis: { dAppId: 'my-dapp-id-123-xyz' },

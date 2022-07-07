@@ -21,7 +21,6 @@ function App() {
     <Router>
         <ToastContainer />
       <Routes>
-        //hello
         <Route path="/" element={<Homepage />} />
         <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/login" element={<LoginPage />} />
