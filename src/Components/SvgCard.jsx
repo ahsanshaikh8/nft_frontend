@@ -53,14 +53,21 @@ export default function SvgCard(props) {
   const [selectedOption, setSelectedOption] = useState(null);
   const wallet=useWallet()
   const artworkData=props?.data
-  const list=artworkData?.nftList[0]
-  console.log(list)
+  const listedArrayOfObjects=artworkData?.nftList
+  let listedArray = listedArrayOfObjects.map(a => a.token_id);
+  console.log(listedArray)
   let mintedIds=artworkData?.minted_ids[0]
+  console.log(mintedIds)
+  console.log(listedArray)
   let mintedIdsArray=[]
-  for (var i=0;i<mintedIds?.length;i++)
+  let unlistedTokenIds = mintedIds.filter(f => !listedArray.includes(f));
+  let listedTokenIds=mintedIds?.filter(f => listedArray.includes(f));
+
+  console.log(unlistedTokenIds)
+  console.log(listedTokenIds)
+  for (var i=0;i<unlistedTokenIds?.length;i++)
   {
-  //  console.log(artworkData?.nftList[i]['token_id'])
-    mintedIdsArray.push({ value: `${mintedIds[i]}`, label: `${mintedIds[i]}` })
+        mintedIdsArray.push({ value: `${unlistedTokenIds[i]}`, label: `${unlistedTokenIds[i]}` })
   }
   console.log(mintedIdsArray)
   const walletAddress=props?.walletAddress
@@ -274,6 +281,8 @@ export default function SvgCard(props) {
         }}>{artworkData?.description}</span>
         <span className="mb-1">Amount</span>
         <span className="mb-1">{artworkData?.amount_for_sale}</span>
+        <span className="mb-1">Listed</span>
+        <span className="mb-1">{listedTokenIds?.length}</span>
         <div className="w-100 text-center mb-1">
           {
           artworkData?.status==0?
@@ -333,12 +342,33 @@ export default function SvgCard(props) {
         styles={customStyles1}
         
       />
+      
        <label>Enter listing price in bnb:</label>
        <div>
        <input  style={{border: "1px solid black", width:"500px", color:"black"}} type={'number'} value={listValue} onChange={(e)=>{
             setListValue(e.target.value)
        }}></input>
        </div>
+       <div>
+        {listedArrayOfObjects?.length>0?
+         <label>Already Listed Token ids</label>
+         :null}
+         <br/>
+         {listedArrayOfObjects?.map((value,i)=>{
+          return (
+            <>
+            <text style={{marginTop:"120px"}}>{value?.token_id}</text> 
+            <button style={{    width: "142px",
+    height: "30px",
+    padding: "0px",
+    float: "right"}}>Cancel Listing</button><br/><br/>
+            </>
+           
+          )
+         })
+
+         }
+         </div>
        <div style={{padding:"40px"}}>
        <button onClick={handleListing} disabled={!(selectedOption && listValue)?true:false}>List now</button>
        

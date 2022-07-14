@@ -42,8 +42,7 @@ export default function StackingPool() {
     )
     if(data)
     {
-      console.log(data)
-      console.log(data?.data)
+     
       setWalletAddress(data?.walletAddress)
       setAllNfts(data?.data)
     }
