@@ -6,9 +6,15 @@ import Web3 from "web3";
 import { Web3ReactProvider } from "@web3-react/core";
 import { MetamaskProvider } from "./Hooks/useMetamask";
 import { useWallet, UseWalletProvider } from 'use-wallet'
+import WalletConnectProvider from '@walletconnect/web3-provider';
 function getLibrary(provider, connector) {
   return new Web3(provider);
 }
+const options = new WalletConnectProvider({
+  rpc: {
+    97: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+  },
+});
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -21,6 +27,7 @@ root.render(
     
     connectors={{
       // This is how connectors get configured
+      walletconnect:options,
       portis: { dAppId: 'my-dapp-id-123-xyz' },
     }}
   >

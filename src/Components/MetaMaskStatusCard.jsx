@@ -44,6 +44,7 @@ export default function MetaMaskStatusCard() {
   
   return (
     <div className="my-card">
+       <p>my name is {wallet.connector} </p>
       <img
         src="https://uploads-ssl.webflow.com/608c251f56c48d6d1fcff5cb/608c34764115cf533b100518_Polka%20City%20-%20Spy%20Drone.png"
         alt="drone"
@@ -54,6 +55,8 @@ export default function MetaMaskStatusCard() {
       </span>
      
       {wallet?.status!="connected" && (
+        <>
+       
         <MyButton
           className="my-2"
           onClick={()=>{
@@ -61,6 +64,14 @@ export default function MetaMaskStatusCard() {
           }}
           title={"Connect to Metamask"}
         />
+        <MyButton
+          className="my-2"
+          onClick={()=>{
+            wallet.connect("walletconnect")
+          }}
+          title={"Connect to WalletConnect"}
+        />
+        </>
       )}
       {wallet?.status=="connected" ? (
         <span className="text-dark market-status-l2">
@@ -68,12 +79,31 @@ export default function MetaMaskStatusCard() {
         </span>
       ) : null}
       {wallet?.status=="connected" && (
+        wallet?.connector=="injected"?
         <button className="btn btn-danger my-3" onClick={()=>{
          wallet?.reset()
         }}>
           {" "}
           Disconnect From Metamask
         </button>
+        :
+        <>
+        <button className="btn btn-danger my-3" onClick={()=>{
+          wallet?.reset()
+          localStorage?.removeItem("walletconnect")
+
+         }}>
+           {" "}
+           Disconnect from wallet connect
+         </button>
+         {/* <button className="btn btn-danger my-3" onClick={()=>{
+          wallet?.reset()
+
+         }}>
+           {" "}
+           Remove wallet connect account
+         </button> */}
+         </>
       )}
     </div>
   );
