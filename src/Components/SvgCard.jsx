@@ -54,13 +54,13 @@ export default function SvgCard(props) {
   const wallet=useWallet()
   const artworkData=props?.data
   const listedArrayOfObjects=artworkData?.nftList
-  let listedArray = listedArrayOfObjects.map(a => a.token_id);
+  let listedArray = listedArrayOfObjects?.map(a => a.token_id);
   
   let mintedIds=artworkData?.minted_ids[0]
   
   let mintedIdsArray=[]
-  let unlistedTokenIds = mintedIds?.filter(f => !listedArray.includes(f));
-  let listedTokenIds=mintedIds?.filter(f => listedArray.includes(f));
+  let unlistedTokenIds = mintedIds?.filter(f => !listedArray?.includes(f));
+  let listedTokenIds=mintedIds?.filter(f => listedArray?.includes(f));
 
   
   for (var i=0;i<unlistedTokenIds?.length;i++)
