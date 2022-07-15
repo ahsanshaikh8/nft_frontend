@@ -21,7 +21,7 @@ export default function StackingPool() {
   const [componentLoader,setComponentLoader]=useState(false)
   const [componentLoader1,setComponentLoader1]=useState(false)
     const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
-    console.log(userType)
+  
     const userID=userType?._id
   useEffect(() => {
     getAllNfts()
@@ -42,7 +42,7 @@ export default function StackingPool() {
     )
     if(data)
     {
-     
+      console.log(data)
       setWalletAddress(data?.walletAddress)
       setAllNfts(data?.data)
     }

@@ -55,23 +55,21 @@ export default function SvgCard(props) {
   const artworkData=props?.data
   const listedArrayOfObjects=artworkData?.nftList
   let listedArray = listedArrayOfObjects.map(a => a.token_id);
-  console.log(listedArray)
+  
   let mintedIds=artworkData?.minted_ids[0]
-  console.log(mintedIds)
-  console.log(listedArray)
+  
   let mintedIdsArray=[]
   let unlistedTokenIds = mintedIds.filter(f => !listedArray.includes(f));
   let listedTokenIds=mintedIds?.filter(f => listedArray.includes(f));
 
-  console.log(unlistedTokenIds)
-  console.log(listedTokenIds)
+  
   for (var i=0;i<unlistedTokenIds?.length;i++)
   {
         mintedIdsArray.push({ value: `${unlistedTokenIds[i]}`, label: `${unlistedTokenIds[i]}` })
   }
-  console.log(mintedIdsArray)
+  
   const walletAddress=props?.walletAddress
-  console.log(walletAddress)
+  
   const imagePath=`${process.env.REACT_APP_IMAGE_PATH}/${artworkData?.file}`
   let subtitle;
   const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -101,6 +99,48 @@ export default function SvgCard(props) {
   function closeModal1() {
     setIsOpen1(false);
   }
+  const handleCancelListing=async(value)=>{
+    console.log(value)
+    const indexHash=value?.index_hash
+    web3.setProvider(wallet.ethereum)
+    const marketplaceDv=new web3.eth.Contract(marketplaceContractAbi, marketplaceContractAddress);
+    marketplaceDv.methods.cancelTrade(indexHash)
+    .send({ from: wallet?.account},async function(result)
+    {
+       console.log(result)
+    })
+    .on("transactionHash", async function (hash) { 
+      closeModal1()
+      //insertListingStatus
+      await server.post("/users/insertListingStatus",
+                {
+                  id:value?._id,
+                  hash
+               },
+                       {
+                         headers: {
+                           "Content-Type": "application/json",
+                         },
+                       }
+                     )
+                    .then((result)=>{
+                      props?.loader==true?props?.setloader(false):props?.setloader(true)
+                         console.log(result)
+                    })
+
+    })
+    .then(r=>{
+              
+      toast.success("Listed cancelled successfully")
+      props?.loader1==false?props?.setloader1(true):props?.setloader1(false)
+       console.log(r)
+     })
+     .catch(e=>{
+      toast.error(e?.message)
+      console.log(e)
+     })
+
+  }
  const handleListing=async()=>{
   web3.setProvider(wallet.ethereum)
   const weiPrice = web3.utils.toWei(listValue.toString(), "ether");
@@ -117,8 +157,10 @@ export default function SvgCard(props) {
                   console.log(result)
                })
                .on("transactionHash", async function (hash) { 
-                closeModal1()
+               
                 toast.success("Transaction submitted. please wait for the network to confirm")
+                setSelectedOption(null)
+                closeModal()
                 ///users/insertListHash
                 await server.post("/users/insertListHash",
                 {
@@ -134,13 +176,13 @@ export default function SvgCard(props) {
                        }
                      )
                     .then((result)=>{
-                       props?.loader==true?props?.setloader(false):props?.setloader(true)
+                       
                          console.log(result)
                     })
             
                })
                .then(r=>{
-                
+                closeModal1()
                 toast.success("Nft Listed successfully")
                 props?.loader1==false?props?.setloader1(true):props?.setloader1(false)
                  console.log(r)
@@ -181,14 +223,14 @@ export default function SvgCard(props) {
               }
             )
            .then((result)=>{
-              props?.loader==true?props?.setloader(false):props?.setloader(true)
+              
                 console.log(result)
            })
         
       })
       .then(r=>{
-       
-       toast.success("Nft minted successfully")
+       closeModal1()
+       toast.success("Nft listed successfully")
        props?.loader1==false?props?.setloader1(true):props?.setloader1(false)
         console.log(r)
 
@@ -361,7 +403,9 @@ export default function SvgCard(props) {
             <button style={{    width: "142px",
     height: "30px",
     padding: "0px",
-    float: "right"}}>Cancel Listing</button><br/><br/>
+    float: "right"}} onClick={()=>{
+      handleCancelListing(value)}
+      } >Cancel Listing</button><br/><br/>
             </>
            
           )
