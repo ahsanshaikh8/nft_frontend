@@ -59,7 +59,7 @@ export default function SvgCard(props) {
   let mintedIds=artworkData?.minted_ids[0]
   
   let mintedIdsArray=[]
-  let unlistedTokenIds = mintedIds.filter(f => !listedArray.includes(f));
+  let unlistedTokenIds = mintedIds?.filter(f => !listedArray.includes(f));
   let listedTokenIds=mintedIds?.filter(f => listedArray.includes(f));
 
   
@@ -315,6 +315,7 @@ export default function SvgCard(props) {
       <img className="nft-image-in-svg-card" src={imagePath} alt="NFT pic" />
       <h2 className="nft-title-in-svg-card">{artworkData?.title}</h2>
       <div className="market-price">{artworkData?.status==1? 0.001 * artworkData?.amount_for_sale:artworkData?.price} BNB</div>
+      
       <div className="hovered-info">
         <span className="mb-1">Description:</span>
         <span className="mb-1" style={{ 
