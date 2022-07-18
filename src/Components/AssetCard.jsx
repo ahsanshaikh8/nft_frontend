@@ -4,6 +4,9 @@ import MyButton from "./MyButton";
 import SignUp from "./SignUp";
 
 function AssetCard(props) {
+  console.log(props?.data)
+  const data=props?.data
+  const imagePath=`${process.env.REACT_APP_IMAGE_PATH}/${data?.file}`
   const [showBuy, setShowBuy] = useState(false);
   const [state, setState] = useState({
     showSignUpModal: false,
@@ -31,16 +34,16 @@ function AssetCard(props) {
         setShowBuy(false);
       }}
     >
-      <SignUp
+      {/* <SignUp
         show={state.showSignUpModal}
         closeModal={() => {
           showSignUpModalF();
         }}
-      />
-      <img src={props.image} alt="drone" width={"235px"} height={"140px"} />
-      <p className="asset-title">{props.name} </p>
-      <p className="asset-detail">PRICE: {props.price}</p>
-      <p className="asset-detail">Serial: {props.serial}</p>
+      /> */}
+      <img src={imagePath} alt="drone" width={"235px"} height={"140px"} />
+      <p className="asset-title">{data?.title} </p>
+      <p className="asset-detail">PRICE: {data?.listed_price}</p>
+      <p className="asset-detail">Serial: {data?.token_id}</p>
       {/* {showBuy && <MyButton className="text-white w-50 mt-3" title={"Buy"} />} */}
       <MyButton
         className="text-white w-50 mt-3 buy-b"

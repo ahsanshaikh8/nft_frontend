@@ -49,6 +49,7 @@ const customStyles = {
 
 };
 export default function SvgCard(props) {
+  const [listingStatus,setListingStatus]=useState(false)
   const [listValue,setListValue]=useState("")
   const [selectedOption, setSelectedOption] = useState(null);
   const wallet=useWallet()
@@ -56,7 +57,7 @@ export default function SvgCard(props) {
   const listedArrayOfObjects=artworkData?.nftList
   let listedArray = listedArrayOfObjects?.map(a => a.token_id);
   
-  let mintedIds=artworkData?.minted_ids[0]
+  let mintedIds=artworkData?.minted_ids?artworkData?.minted_ids[0]:null
   
   let mintedIdsArray=[]
   let unlistedTokenIds = mintedIds?.filter(f => !listedArray?.includes(f));
@@ -157,10 +158,10 @@ export default function SvgCard(props) {
                   console.log(result)
                })
                .on("transactionHash", async function (hash) { 
-               
+                setListingStatus(true)
                 toast.success("Transaction submitted. please wait for the network to confirm")
                 setSelectedOption(null)
-                closeModal()
+                closeModal1()
                 ///users/insertListHash
                 await server.post("/users/insertListHash",
                 {
@@ -182,7 +183,7 @@ export default function SvgCard(props) {
             
                })
                .then(r=>{
-                closeModal1()
+               setListingStatus(false)
                 toast.success("Nft Listed successfully")
                 props?.loader1==false?props?.setloader1(true):props?.setloader1(false)
                  console.log(r)
@@ -208,6 +209,7 @@ export default function SvgCard(props) {
          console.log(result)
       })
       .on("transactionHash", async function (hash) { 
+        closeModal1()
        toast.success("Transaction submitted. please wait for the network to confirm")
        await server.post("/users/insertListHash",
        {
@@ -314,7 +316,9 @@ export default function SvgCard(props) {
     <div className="svg-card">
       <img className="nft-image-in-svg-card" src={imagePath} alt="NFT pic" />
       <h2 className="nft-title-in-svg-card">{artworkData?.title}</h2>
+      {artworkData?.status==1?
       <div className="market-price">{artworkData?.status==1? 0.001 * artworkData?.amount_for_sale:artworkData?.price} BNB</div>
+      :null}
       
       <div className="hovered-info">
         <span className="mb-1">Description:</span>
@@ -322,14 +326,18 @@ export default function SvgCard(props) {
           textOverflow: "ellipsis",
           maxWidth: "150px"
         }}>{artworkData?.description}</span>
-        <span className="mb-1">Amount</span>
+        <span className="mb-1">Amount (No of copies)</span>
         <span className="mb-1">{artworkData?.amount_for_sale}</span>
+        {artworkData?.status==3?
+        <>
         <span className="mb-1">Listed</span>
-        <span className="mb-1">{listedTokenIds?.length}</span>
+        <span className="mb-1">{!listedTokenIds?"0":listedTokenIds?.length}</span>
+        </>
+        :null}
         <div className="w-100 text-center mb-1">
           {
           artworkData?.status==0?
-          <MyButton fullWidth title={"Waiting for approval"} disabled />
+          <MyButton fullWidth title={"Waiting for admin approval"} disabled />
           :artworkData?.status==2?
           <MyButton fullWidth title={"Minting pending"} disabled />
           :wallet.status!="connected"?
@@ -342,6 +350,9 @@ export default function SvgCard(props) {
            :wallet?.account?.toLowerCase() != walletAddress?.toLowerCase()?  
           <MyButton fullWidth title={"Switch to onboarding wallet"} disabled />
           :artworkData?.status==3?
+          listingStatus?
+          <MyButton fullWidth title={"Listing pending..."} disabled />
+          :
           <MyButton fullWidth title={"List for sale"} onClick={()=>{
             openModal1()
           }} />

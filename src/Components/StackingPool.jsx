@@ -83,12 +83,16 @@ export default function StackingPool() {
       <BrandLogo className="hide-on-mobile" />
       {isBigScreen ? pcHeadings : mobileHeadings}
       <div className="cards-wrapper">
-        {allNfts?.map((val,i)=>{
+        {
+        allNfts?.length==0?
+        <text style={{color: "white", fontSize:"30px"}}>No assests found</text>
+        :
+        allNfts?.map((val,i)=>{
             return(<SvgCard data={val} walletAddress={walletAddress} loader={componentLoader} setloader={setComponentLoader} loader1={componentLoader1} setloader1={setComponentLoader1} />)
         })
       }
         
-      </div>
+      </div>  
       <div className="stacking-pool-coins-img" />
       <Footer showSocials={false} />
     </div>

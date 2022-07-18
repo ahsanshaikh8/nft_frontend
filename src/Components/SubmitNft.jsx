@@ -16,8 +16,7 @@ export default function SubmitNft() {
   const [state, setState] = useState({
     name: "",
     description: "",
-    amount: 1,
-    price: 0,
+    amount: 0,
     author: "",
     isConfirmed: false,
   });
@@ -34,7 +33,7 @@ export default function SubmitNft() {
 formdata.append("file",file);
 formdata.append("title", state?.name);
 formdata.append("description", state?.description);
-formdata.append("price", state?.price);
+// formdata.append("price", state?.price);
 formdata.append("amount_for_sale", state?.amount);
 formdata.append("status",0);
     server.post("users/createNFT", formdata, {
@@ -48,8 +47,8 @@ formdata.append("status",0);
         {
           name: "",
           description: "",
-          amount: 1,
-          price: 0,
+          amount: 0,
+          
           author: "",
           isConfirmed: false,
         }
@@ -160,14 +159,14 @@ formdata.append("status",0);
               label="Amount For Sale"
               value={state?.amount}
             />
-            <MyTextField
+            {/* <MyTextField
               onChange={handleChange}
               type="text"
               name="price"
               label="Price (25 Minimum)"
               placeholder="Amount of MMM"
               value={state?.price}
-            />
+            /> */}
             <MyTextField
               onChange={handleChange}
               type="text"
@@ -191,7 +190,7 @@ formdata.append("status",0);
             </div>
             <MyButton title={"SUBMIT"} onClick={()=>{
               uploadImage()
-            }} disabled={(state?.name && state?.isConfirmed && state?.description && state?.amount && state?.price && state?.author && file) ?false:true} />
+            }} disabled={(state?.name && state?.isConfirmed && state?.description && state?.amount  && state?.author && file) ?false:true} />
             <div
               style={{
                 color: "#948b8b",
