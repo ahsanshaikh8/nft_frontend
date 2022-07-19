@@ -10,6 +10,7 @@ import Modal from 'react-modal';
 import { useState,useEffect } from "react";
 import Select from 'react-select';
 import MyTextField from "./MyTextField";
+import CryptoJS from "crypto-js";
 const options = [
   { value: 'chocolate', label: 'Chocolate' },
   { value: 'strawberry', label: 'Strawberry' },
@@ -49,6 +50,12 @@ const customStyles = {
 
 };
 export default function SvgCard(props) {
+  const User1 = JSON.parse(localStorage.getItem("User"))
+  const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
+  
+    const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
+  
+    const userId=userType?._id
   const [listingStatus,setListingStatus]=useState(false)
   const [listValue,setListValue]=useState("")
   const [selectedOption, setSelectedOption] = useState(null);
@@ -168,7 +175,8 @@ export default function SvgCard(props) {
                   artId:artworkData?._id,
                    hash,
                    token_id:selectedOption?.value,
-                   listed_price:listValue
+                   listed_price:listValue,
+                   userId
                },
                        {
                          headers: {
@@ -216,7 +224,8 @@ export default function SvgCard(props) {
          artId:artworkData?._id,
           hash,
           token_id:selectedOption?.value,
-          listed_price:listValue
+          listed_price:listValue,
+          userId
       },
               {
                 headers: {
