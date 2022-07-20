@@ -61,6 +61,7 @@ export default function SvgCard(props) {
   const [selectedOption, setSelectedOption] = useState(null);
   const wallet=useWallet()
   const artworkData=props?.data
+  console.log(artworkData)
   const listedArrayOfObjects=artworkData?.nftList
   let listedArray = listedArrayOfObjects?.map(a => a.token_id);
   
@@ -336,7 +337,7 @@ export default function SvgCard(props) {
           maxWidth: "150px"
         }}>{artworkData?.description}</span>
         <span className="mb-1">Amount (No of copies)</span>
-        <span className="mb-1">{artworkData?.amount_for_sale}</span>
+        <span className="mb-1">{artworkData?.minted_ids[0]?.length}</span>
         {artworkData?.status==3?
         <>
         <span className="mb-1">Listed</span>

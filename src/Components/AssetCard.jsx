@@ -44,11 +44,38 @@ function AssetCard(props) {
     console.log(data?.nft_id)
     if(wallet.status!="connected")
     {
-       alert("please connect to your wallet ")
+      toast.error("please connect to your wallet")
+      
+    }
+    else if(data?.userId==userId)
+    {
+      toast.error("you already own this nft")
     }
     else
     {
-      const indexhash=data?.index_hash
+      await server.post("/users/checkBuyingStatus",
+                {
+                  userId:data?.userId,
+                  nft_id:data?.nft_id,
+                  token_id:data?.token_id
+
+               },
+                       {
+                         headers: {
+                           "Content-Type": "application/json",
+                         },
+                       }
+                     )
+                     .then(async(result)=>{
+                      console.log(result?.data.error)
+                      if(result?.data?.error)
+                      {
+                        
+                        toast.error(result?.data?.error)
+                      }
+                      else
+                      {
+                        const indexhash=data?.index_hash
       const listedPrice=data?.listed_price
 
       console.log(indexhash)
@@ -58,13 +85,13 @@ function AssetCard(props) {
       const marketplaceDv=new web3.eth.Contract(marketplaceContractAbi, marketplaceContractAddress);
       console.log(marketplaceContractAddress)
       console.log(marketplaceContractAbi)
-      // marketplaceDv.methods.buyWithEth(indexhash)
-      // .send({ from: wallet?.account,value:weiPrice},async function(result)
-      // {
-      //    console.log(result)
-      // })
-      // .on("transactionHash", async function (hash) { 
-      //   console.log(hash)
+      marketplaceDv.methods.buyWithEth(indexhash)
+      .send({ from: wallet?.account,value:weiPrice},async function(result)
+      {
+         console.log(result)
+      })
+      .on("transactionHash", async function (hash) { 
+        console.log(hash)
         
         await server.post("/users/insertNewNftData",
                 {
@@ -72,7 +99,8 @@ function AssetCard(props) {
                   description:data?.description,
                   title:data?.title,
                   userId:userId,
-                  nftId:data?.nft_id
+                  nftId:data?.nft_id,
+                  token_id:data?.token_id
 
                },
                        {
@@ -81,18 +109,37 @@ function AssetCard(props) {
                          },
                        }
                      )
-                    .then((result)=>{
-                     
-                         console.log(result)
+                    .then(async(result)=>{
+                     await server.post("/users/insertPendingBuyingStatus",
+                     {
+                      tokenId:data?.token_id,
+                      userId:data?.userId,
+                      nftId:data?.nft_id,
+                      buyer_user_id:userId,
+                      buying_wallet_address:wallet?.account,
+                      hash:hash
+                   },
+                           {
+                             headers: {
+                               "Content-Type": "application/json",
+                             },
+                           }
+                         )
+                         
                     })
-      // })
-      // .then(r=>{
-      //   console.log(r)
-      // })
-      // .catch(e=>{
-      //   toast.error(e?.message)
-      //   console.log(e)
-      //  })
+       })
+       .then(r=>{
+         console.log(r)
+       })
+       .catch(e=>{
+         toast.error(e?.message)
+         console.log(e)
+        })
+                        console.log(result)
+                      }
+                     
+                     })
+      
     }
     // const isLogined = Boolean(getUser());
     // if (!isLogined) {
@@ -124,7 +171,7 @@ function AssetCard(props) {
         className="text-white w-50 mt-3 buy-b"
         title={"Buy"}
         onClick={handleBuyClick}
-        disabled
+      
       />
     </div>
   );
