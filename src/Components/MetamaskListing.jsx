@@ -10,10 +10,8 @@ export default function MetamaskListing() {
   const [componentLoader,setComponentLoader]=useState(false)
   const [marketplaceData,setMarketPlaceData]=useState([])
   useEffect(() => {
-    
-    
-      getMArketplaceItems();
-    
+    getMArketplaceItems();
+
   }, [componentLoader]);
   function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
