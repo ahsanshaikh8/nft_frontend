@@ -57,6 +57,7 @@ export default function SvgCard(props) {
   
     const userId=userType?._id
   const [listingStatus,setListingStatus]=useState(false)
+  const [cancelListing,setCancelListing]=useState(false)
   const [listValue,setListValue]=useState("")
   const [selectedOption, setSelectedOption] = useState(null);
   const wallet=useWallet()
@@ -119,6 +120,7 @@ export default function SvgCard(props) {
        console.log(result)
     })
     .on("transactionHash", async function (hash) { 
+      setCancelListing(true)
       closeModal1()
       //insertListingStatus
       await server.post("/users/insertListingStatus",
@@ -139,12 +141,13 @@ export default function SvgCard(props) {
 
     })
     .then(r=>{
-              
+              setCancelListing(false)
       toast.success("Listed cancelled successfully")
       props?.loader1==false?props?.setloader1(true):props?.setloader1(false)
        console.log(r)
      })
      .catch(e=>{
+      setCancelListing(false)
       toast.error(e?.message)
       console.log(e)
      })
@@ -362,6 +365,8 @@ export default function SvgCard(props) {
           :artworkData?.status==3?
           listingStatus?
           <MyButton fullWidth title={"Listing pending..."} disabled />
+          :cancelListing?
+          <MyButton fullWidth title={"Cancel Listing pending..."} disabled />
           :
           <MyButton fullWidth title={"List for sale"} onClick={()=>{
             openModal1()

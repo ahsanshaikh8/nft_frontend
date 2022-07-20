@@ -10,6 +10,7 @@ import { useState } from "react";
 import server from "../apis/server";
 import CryptoJS from "crypto-js";
 import { useWallet } from "use-wallet";
+import Loader from "./Loader";
 export default function StackingPool() {
   const wallet=useWallet()
   const isBigScreen = useMediaQuery({ query: "(min-width: 600px)" });
@@ -20,6 +21,7 @@ export default function StackingPool() {
   const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
   const [componentLoader,setComponentLoader]=useState(false)
   const [componentLoader1,setComponentLoader1]=useState(false)
+  const [isLoading, setIsLoading] = useState(true);
     const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
   
     const userID=userType?._id
@@ -42,6 +44,7 @@ export default function StackingPool() {
     )
     if(data)
     {
+      setIsLoading(false)
       console.log(data)
       setWalletAddress(data?.walletAddress)
       setAllNfts(data?.data)
@@ -78,7 +81,11 @@ export default function StackingPool() {
       </div>
     </div>
   );
-  return (
+  return isLoading ? (
+    <div className="asset-listing">
+      <Loader />
+    </div>
+  ) :  (
     <div className="stacking-pool">
       <BrandLogo className="hide-on-mobile" />
       {isBigScreen ? pcHeadings : mobileHeadings}

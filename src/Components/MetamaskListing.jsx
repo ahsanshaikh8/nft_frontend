@@ -7,14 +7,14 @@ const a = require("../Helpers/MOCK_DATA.json");
 export default function MetamaskListing() {
   const [assets, setAssets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [componentLoader,setComponentLoader]=useState(false)
   const [marketplaceData,setMarketPlaceData]=useState([])
   useEffect(() => {
-    setTimeout(() => {
-      setAssets(a);
-      setIsLoading(false);
+    
+    
       getMArketplaceItems();
-    }, 4000);
-  }, []);
+    
+  }, [componentLoader]);
   function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -36,6 +36,7 @@ export default function MetamaskListing() {
          )
          if(data)
          {
+          setIsLoading(false);
           const array=data?.data
           shuffleArray(array)
           setMarketPlaceData(array)
@@ -49,8 +50,11 @@ export default function MetamaskListing() {
   ) : (
     <div className="asset-listing">
 
-      {marketplaceData.map((asset) => (
-        <AssetCard data={asset} />
+      {marketplaceData?.length==0?
+      <text style={{color:"white"}} >No assets in the marketplace</text>
+      :
+      marketplaceData.map((asset) => (
+        <AssetCard data={asset} loader={componentLoader} setloader={setComponentLoader} />
       ))}
     </div>
   );

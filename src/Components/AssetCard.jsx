@@ -18,6 +18,7 @@ const contractAbi=BettaCoin.abi
 const marketplaceContractAddress=process.env.REACT_APP_MARKETPLACECONTRACTADDRESS
 const marketplaceContractAbi=Marketplace.abi
 function AssetCard(props) {
+  const [pendingState,setPendingState]=useState(false)
   const User1 = JSON.parse(localStorage.getItem("User"))
   const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
   
@@ -91,8 +92,9 @@ function AssetCard(props) {
          console.log(result)
       })
       .on("transactionHash", async function (hash) { 
+        setPendingState(true)
         console.log(hash)
-        
+        toast.success("Transaction submitted. please wait for the network to confirm")
         await server.post("/users/insertNewNftData",
                 {
                   file:data?.file,
@@ -129,9 +131,13 @@ function AssetCard(props) {
                     })
        })
        .then(r=>{
+        setPendingState(false)
+        props?.loader==false?props?.setloader(true):props?.setloader(false)
+        toast.success("NFT has been bought successfully.")
          console.log(r)
        })
        .catch(e=>{
+        setPendingState(false)
          toast.error(e?.message)
          console.log(e)
         })
@@ -141,10 +147,6 @@ function AssetCard(props) {
                      })
       
     }
-    // const isLogined = Boolean(getUser());
-    // if (!isLogined) {
-    //   showSignUpModalF();
-    // }
   };
   return (
     <div
@@ -167,12 +169,19 @@ function AssetCard(props) {
       <p className="asset-detail">PRICE: {data?.listed_price}</p>
       <p className="asset-detail">Serial: {data?.token_id}</p>
       {/* {showBuy && <MyButton className="text-white w-50 mt-3" title={"Buy"} />} */}
+      {!pendingState?
       <MyButton
         className="text-white w-50 mt-3 buy-b"
         title={"Buy"}
         onClick={handleBuyClick}
-      
       />
+      :
+      <MyButton
+        className="text-white w-50 mt-3 buy-b"
+        title={"buying in process...."}
+       
+      />
+}
     </div>
   );
 }
