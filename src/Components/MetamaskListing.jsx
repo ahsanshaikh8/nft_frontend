@@ -37,6 +37,7 @@ export default function MetamaskListing() {
           setIsLoading(false);
           const array=data?.data
           shuffleArray(array)
+          console.log(array)
           setMarketPlaceData(array)
           console.log(data?.data)
          }

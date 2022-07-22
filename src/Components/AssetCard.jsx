@@ -52,6 +52,10 @@ function AssetCard(props) {
     {
       toast.error("you already own this nft")
     }
+    else if(wallet?.account?.toLowerCase() != data?.walletAddress.toLowerCase())
+    {
+      toast.error("please switch to you onboarding wallet to buy nfts.")
+    }
     else
     {
       await server.post("/users/checkBuyingStatus",

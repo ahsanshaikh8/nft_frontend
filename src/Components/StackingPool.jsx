@@ -47,7 +47,7 @@ export default function StackingPool() {
       setIsLoading(false)
       console.log(data)
       setWalletAddress(data?.walletAddress)
-      setAllNfts(data?.data)
+      setAllNfts(data?.data?.filter(minted_ids=>minted_ids?.minted_ids[0]?.length>0))
     }
     
   }
