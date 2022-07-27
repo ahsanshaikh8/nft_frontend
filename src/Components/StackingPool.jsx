@@ -47,7 +47,15 @@ export default function StackingPool() {
       setIsLoading(false)
       console.log(data)
       setWalletAddress(data?.walletAddress)
-      setAllNfts(data?.data?.filter(minted_ids=>minted_ids?.minted_ids[0]?.length>0))
+      const array=data?.data
+      let arr=[]
+      array.forEach(element => {
+        if(element?.status==0 || element?.status==1 || element?.status==2 || (element?.minted_ids[0]?.length >0 && element?.status==3))
+        {
+          arr.push(element)
+        }
+      })
+      setAllNfts(arr)
     }
     
   }
@@ -91,6 +99,9 @@ export default function StackingPool() {
       {isBigScreen ? pcHeadings : mobileHeadings}
       <div className="cards-wrapper">
         {
+          !userID?
+          <text style={{color: "white", fontSize:"30px"}}>Please log in first to see your assets.</text>
+          :  
         allNfts?.length==0?
         <text style={{color: "white", fontSize:"30px"}}>No assests found</text>
         :

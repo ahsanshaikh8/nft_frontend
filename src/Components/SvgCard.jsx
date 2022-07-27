@@ -340,7 +340,9 @@ export default function SvgCard(props) {
           maxWidth: "150px"
         }}>{artworkData?.description}</span>
         <span className="mb-1">Amount (No of copies)</span>
-        <span className="mb-1">{artworkData?.minted_ids[0]?.length}</span>
+        <span className="mb-1">{artworkData?.minted_ids[0]?.length?artworkData?.minted_ids[0]?.length:artworkData?.amount_for_sale}</span>
+        <span className="mb-1">Category</span>
+        <span className="mb-1">{artworkData?.category}</span>
         {artworkData?.status==3?
         <>
         <span className="mb-1">Listed</span>

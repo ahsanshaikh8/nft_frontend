@@ -43,7 +43,7 @@ export default function LoginPage() {
       localStorage.setItem('User', JSON.stringify(userObj));
       console.log(userObj)
       const User1 = JSON.parse(localStorage.getItem("User"))
-      navigate("/marketplace")
+      navigate("/my-assets")
       toast.success("Login Successfull")
     // const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
     // const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''

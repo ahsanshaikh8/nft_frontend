@@ -11,8 +11,17 @@ import useMetamask from "../Hooks/useMetamask.js";
 import { useEffect } from "react";
 import { getHasCancelledPopUp } from "../Helpers/storage.js";
 import { useWallet, UseWalletProvider } from 'use-wallet'
+import CryptoJS from "crypto-js";
+import { toast } from "react-toastify";
 export default function Homepage() {
+  const [componentLoader,setComponentLoader]=useState(false)
   const wallet = useWallet()
+  
+  const User1 = JSON.parse(localStorage.getItem("User"))
+  const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
+    const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
+    console.log(userType)
+    const userID=userType?._id
   // const { connect, disconnect, isActive, account } = useMetamask();
   const [state, setState] = useState({
     showSignupModal: false,
@@ -24,12 +33,9 @@ export default function Homepage() {
       showSignupModal: !state.showSignupModal,
     }));
   };
-  // useEffect(() => {
-  //   if (isActive && !getHasCancelledPopUp()) {
-  //     console.log("connected to metamask in homepage");
-  //     showSignUpModal();
-  //   }
-  // }, [isActive])
+  useEffect(() => {
+   
+  }, [componentLoader])
   return (
     <div className="background-video">
       <div className="overlay">
@@ -97,6 +103,26 @@ export default function Homepage() {
 
               }}
             ></MyHomepageButton>
+            {!userID?
+            <NavLink to={"/login"}>
+              <MyHomepageButton
+                title={"Log in"}
+                className="button w-button"
+              ></MyHomepageButton>
+            </NavLink>
+            :
+            <NavLink to={"/"}>
+              <MyHomepageButton
+                title={"Log Out"}
+                className="button w-button"
+                onClick={()=>{
+                  localStorage.removeItem("User")
+                  toast.success("Log out successfully")
+                  componentLoader?setComponentLoader(false):setComponentLoader(true)
+                }}
+              ></MyHomepageButton>
+              </NavLink>
+            }
           </div>
         </div>
         <Footer showSocials={true} />*

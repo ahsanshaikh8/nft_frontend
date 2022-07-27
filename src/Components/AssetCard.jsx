@@ -25,9 +25,13 @@ function AssetCard(props) {
     const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
   
     const userId=userType?._id
+    const buyerWallet=userType?.walletAddress
+    console.log(userType)
    const wallet=useWallet()
   console.log(props?.data)
+
   const data=props?.data
+  console.log(data)
   const imagePath=`${process.env.REACT_APP_IMAGE_PATH}/${data?.file}`
   const [showBuy, setShowBuy] = useState(false);
 
@@ -43,7 +47,12 @@ function AssetCard(props) {
   };
   const handleBuyClick = async(e) => {
     console.log(data?.nft_id)
-    if(wallet.status!="connected")
+    if(!userId)
+    {
+      toast.error("Please login first to buy nfts")
+    }
+
+    else if(wallet.status!="connected")
     {
       toast.error("please connect to your wallet")
       
@@ -52,7 +61,7 @@ function AssetCard(props) {
     {
       toast.error("you already own this nft")
     }
-    else if(wallet?.account?.toLowerCase() != data?.walletAddress.toLowerCase())
+    else if(wallet?.account?.toLowerCase() != buyerWallet?.toLowerCase())
     {
       toast.error("please switch to you onboarding wallet to buy nfts.")
     }
@@ -170,8 +179,9 @@ function AssetCard(props) {
       /> */}
       <img src={imagePath} alt="drone" width={"235px"} height={"140px"} />
       <p className="asset-title">{data?.title} </p>
-      <p className="asset-detail">PRICE: {data?.listed_price}</p>
+      <p className="asset-detail">PRICE: {data?.listed_price} BNB</p>
       <p className="asset-detail">Serial: {data?.token_id}</p>
+      <p className="asset-detail">ART ID: {data?.nft_id}</p>
       {/* {showBuy && <MyButton className="text-white w-50 mt-3" title={"Buy"} />} */}
       {!pendingState?
       <MyButton

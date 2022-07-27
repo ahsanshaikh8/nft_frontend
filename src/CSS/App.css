@@ -5,6 +5,11 @@
   overflow-y: hidden;
 }
 
+.css-w4zpwe-Input{
+  width: 350px;
+  display: inline-block;
+}
+
 .my-button {
   background-color: red;
   min-height: 200px;

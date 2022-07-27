@@ -8,6 +8,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import MyButton from "./MyButton";
+import { useNavigate } from "react-router-dom";
 import server from "../apis/server"
 import { useEffect } from "react";
 import { toast } from 'react-toastify';
@@ -26,18 +27,22 @@ const MenuProps = {
   },
 };
 export default function SignUp({ show, closeModal }) {
+  const navigate=useNavigate()
   const wallet=useWallet()
   const [state, setState] = useState({
     howDoYouKnowUs: "How do you know us?",
   });
  
   const isBigScreen = useMediaQuery({ query: "(min-width: 600px)" });
+  const regex=/^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
+
   let validationSchema = yup.object({ 
     username: yup.string().required('This field is required.'),
-    phonenumber: yup.string().required('This field is required.'),
+    phonenumber: yup.string().matches(regex,'Phone number is not valid').required('This field is required'),
     email: yup.string().email('Invalid email').required('This field is required.'),
     password: yup.string().required('This field is required.'),
     walletaddress:yup.string().required('This field is required.')
+    
    });  
 
   const handleClose = () => {
@@ -71,6 +76,7 @@ if(data)
   console.log(data)
   if(data?.success)
   {
+    navigate("/marketplace")
     toast.success("Signup Successfull")
   }
   else

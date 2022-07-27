@@ -10,24 +10,47 @@ import {useDropzone} from 'react-dropzone'
 import server from "../apis/server";
 import  {useCallback} from 'react'
 import CryptoJS from 'crypto-js'
+import Select from 'react-select';
 import { toast } from 'react-toastify';
+const options = [
+  { value: 'cars', label: 'Cars' },
+  { value: 'land', label: 'Land' },
+  { value: 'music', label: 'Music' },
+];
+const customStyles1 = {
+  control: (styles) => ({ ...styles, color: 'white' }),
+  option: (base, state) => ({
+    ...base,
+    backgroundColor: "#fff",
+    color: state.isSelected ? "#9FC131" : "#000",
+
+  }),
+  input: (styles) => ({ ...styles, color:"white" }),
+ 
+}
 export default function SubmitNft() {
+  const [selectedOption, setSelectedOption] = useState(null);
   const [file, setFile] = useState(null);
-  const [state, setState] = useState({
-    name: "",
-    description: "",
-    amount: 0,
-    author: "",
-    isConfirmed: false,
-  });
+  
   const User1 = JSON.parse(localStorage.getItem("User"))
   const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
     const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
     console.log(userType)
     const userID=userType?._id
+    const userName=userType?.name
+    const [state, setState] = useState({
+      name: "",
+      description: "",
+      amount: 0,
+      author: userName,
+      isConfirmed: false,
+    });
   function uploadImage() {
     if(!userID)
+    {
+    toast.error("Please login first to submit your nft")
     return 
+    }
     let formdata = new FormData()
     formdata.append("userId", userID);
 formdata.append("file",file);
@@ -36,6 +59,7 @@ formdata.append("description", state?.description);
 // formdata.append("price", state?.price);
 formdata.append("amount_for_sale", state?.amount);
 formdata.append("status",0);
+formdata.append("category",selectedOption?.value)
     server.post("users/createNFT", formdata, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -149,6 +173,17 @@ formdata.append("status",0);
               placeholder="Description"
               value={state?.description}
             />
+           
+            <label style={{color:"white", display:"inline"}}>Category:</label>
+
+             <Select
+        defaultValue={selectedOption}
+        onChange={setSelectedOption}
+        options={options}
+        styles={customStyles1}
+       
+      />
+           
             <MyTextField
               onChange={handleChange}
               type="number"
@@ -190,7 +225,7 @@ formdata.append("status",0);
             </div>
             <MyButton title={"SUBMIT"} onClick={()=>{
               uploadImage()
-            }} disabled={(state?.name && state?.isConfirmed && state?.description && state?.amount  && state?.author && file) ?false:true} />
+            }} disabled={(state?.name && state?.isConfirmed && state?.description && state?.amount  && state?.author && file && selectedOption) ?false:true} />
             <div
               style={{
                 color: "#948b8b",
