@@ -62,8 +62,11 @@ export default function SvgCard(props) {
   const [selectedOption, setSelectedOption] = useState(null);
   const wallet=useWallet()
   const artworkData=props?.data
-  console.log(artworkData)
+ 
   const listedArrayOfObjects=artworkData?.nftList
+  const lastListedPrice=listedArrayOfObjects?.slice(-1)[0]?.listed_price
+
+  console.log(lastListedPrice)
   let listedArray = listedArrayOfObjects?.map(a => a.token_id);
   
   let mintedIds=artworkData?.minted_ids?artworkData?.minted_ids[0]:null
@@ -413,13 +416,16 @@ export default function SvgCard(props) {
         styles={customStyles1}
         
       />
-      
+     
        <label>Enter listing price in bnb:</label>
        <div>
        <input  style={{border: "1px solid black", width:"500px", color:"black"}} type={'number'} value={listValue} onChange={(e)=>{
             setListValue(e.target.value)
        }}></input>
        </div>
+       {listValue<=lastListedPrice && listValue!=""?
+       <text>Please enter a price greater then {lastListedPrice} BNB </text>
+       :null}
        <div>
         {listedArrayOfObjects?.length>0?
          <label>Already Listed Token ids</label>
@@ -429,6 +435,7 @@ export default function SvgCard(props) {
           return (
             <>
             <text style={{marginTop:"120px"}}>{value?.token_id}</text> 
+            <text style={{paddingLeft:"100px"}}>Price:{value?.listed_price} BNB</text>
             <button style={{    width: "142px",
     height: "30px",
     padding: "0px",

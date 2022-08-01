@@ -12,11 +12,7 @@ import  {useCallback} from 'react'
 import CryptoJS from 'crypto-js'
 import Select from 'react-select';
 import { toast } from 'react-toastify';
-const options = [
-  { value: 'cars', label: 'Cars' },
-  { value: 'land', label: 'Land' },
-  { value: 'music', label: 'Music' },
-];
+
 const customStyles1 = {
   control: (styles) => ({ ...styles, color: 'white' }),
   option: (base, state) => ({
@@ -31,7 +27,7 @@ const customStyles1 = {
 export default function SubmitNft() {
   const [selectedOption, setSelectedOption] = useState(null);
   const [file, setFile] = useState(null);
-  
+  const [options,setOptions]=useState([])
   const User1 = JSON.parse(localStorage.getItem("User"))
   const bytes = User1? CryptoJS.AES.decrypt(User1, "userObject"):'';
     const userType = bytes? JSON.parse(bytes.toString(CryptoJS.enc.Utf8)):''
@@ -45,6 +41,34 @@ export default function SubmitNft() {
       author: userName,
       isConfirmed: false,
     });
+    useEffect(() => {
+      getAllCategories()
+    }, []);
+    const getAllCategories=async()=>{
+      ///users/getAllCategories
+      const {data} = await server.get(
+        "users/getAllCategories",
+        {
+
+        } 
+       ,
+        { 
+          headers: {
+            "Content-Type": "application/json",
+       },
+        } 
+      )
+      if(data)
+      {
+        let categoryArray=[]
+        for (var i=0;i<data?.data?.length;i++)
+        {
+          categoryArray.push({value: `${data?.data[i]?.name}`, label: `${data?.data[i]?.name.toUpperCase()}`})
+        }
+        setOptions(categoryArray)
+       
+      }
+    }
   function uploadImage() {
     if(!userID)
     {
