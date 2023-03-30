@@ -4,8 +4,8 @@ import axios from "axios";
 
 //export const baseUrl = "http://51.222.241.160:8001/api/";
  
- //export const baseUrl = "http://194.5.193.238:8000/api/";
- export const baseUrl="http://localhost:8000/api/";
+ export const baseUrl = "https://immense-savannah-42494.herokuapp.com/api/";
+ //export const baseUrl="http://localhost:8000/api/";
 
 //  export const baseUrl = "https://8e549e6c70b3.ngrok.io";
 export default axios.create({
